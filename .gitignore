@@ -1,3 +1,5 @@
 env
 *.pyc
 soc_litexcore___main__/
+*.edf
+*.eblif
