@@ -44,7 +44,7 @@ class Platform(GenericPlatform):
     def build(self, fragment, build_dir, **kwargs):
         os.makedirs(build_dir, exist_ok=True)
         os.chdir(build_dir)
-        top_output = self.get_verilog(fragment)
+        top_output = self.get_verilog(fragment, name="top_usb")
         top_output.write("litex_core.v")
 
 class _CRG(Module):
@@ -53,15 +53,16 @@ class _CRG(Module):
         self.clock_domains.cd_usb_12 = ClockDomain()
         self.clock_domains.cd_usb_48 = ClockDomain()
 
-        rst = platform.request("sys_rst")
+        sys_rst = platform.request("sys_rst")
+        sys_clk = platform.request("sys_clk")
         clk12 = platform.request("clk12")
         clk48 = platform.request("clk48")
         self.comb += [
-            self.cd_sys.rst.eq(rst),
+            self.cd_sys.rst.eq(sys_rst),
             self.cd_sys.clk.eq(clk12),
-            self.cd_usb_12.rst.eq(rst),
+            self.cd_usb_12.rst.eq(sys_rst),
             self.cd_usb_12.clk.eq(clk12),
-            self.cd_usb_48.rst.eq(rst),
+            self.cd_usb_48.rst.eq(sys_rst),
             self.cd_usb_48.clk.eq(clk48),
         ]
 
